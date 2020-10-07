@@ -1,5 +1,10 @@
-import React, { createContext, useCallback } from 'react';
+import React, { createContext, useCallback, useState } from 'react';
 import api from '../services/api';
+
+interface AuthState{
+  token: string;
+  user: object;
+}
 
 interface Credentials {
   email: string;
@@ -7,23 +12,39 @@ interface Credentials {
 }
 
 interface AuthInterface {
-  name: string;
+  user: object;
   signIn(credentials: Credentials): Promise<void>;
 }
 
 export const AuthContext = createContext<AuthInterface>({} as AuthInterface);
 
 export const AuthProvier: React.FC = ({ children }) => {
+  const [data, setData] = useState<AuthState >(() => {
+    const token = localStorage.getItem('@GoBarber:token');
+    const user = localStorage.getItem('@GoBarber:user');
+
+    if (token && user){
+      return {token, user: JSON.parse(user)};
+    } else {
+      return {} as AuthState;
+    }
+  });
+
   const signIn = useCallback(async ({ email, password })=>{
-    const response = api.post('sessions', {
+    const response = await api.post('sessions', {
       email,
       password
     });
-    console.log(response);
+    const { token, userLogged } = response.data;
+
+    localStorage.setItem('@GoBarber:token', token);
+    localStorage.setItem('@GoBarber:user', JSON.stringify(userLogged));
+
+    setData({ token, user: userLogged });
   },[])
 
   return (
-    <AuthContext.Provider value={{name: 'celine', signIn}}>
+    <AuthContext.Provider value={{user: data.user, signIn}}>
       {children}
     </AuthContext.Provider>
   );
