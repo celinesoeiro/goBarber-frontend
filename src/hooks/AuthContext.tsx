@@ -14,6 +14,7 @@ interface Credentials {
 interface AuthInterface {
   user: object;
   signIn(credentials: Credentials): Promise<void>;
+  signOut(): void;
 }
 
 const AuthContext = createContext<AuthInterface>({} as AuthInterface);
@@ -43,8 +44,15 @@ const AuthProvier: React.FC = ({ children }) => {
     setData({ token, user: userLogged });
   },[])
 
+  const signOut = useCallback(()=>{
+    localStorage.removeItem('@GoBarber:token');
+    localStorage.removeItem('@GoBarber:user');
+
+    setData({} as AuthState);
+  },[])
+
   return (
-    <AuthContext.Provider value={{user: data.user, signIn}}>
+    <AuthContext.Provider value={{user: data.user, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

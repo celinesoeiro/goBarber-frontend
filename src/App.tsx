@@ -3,7 +3,7 @@ import React from 'react';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 
-import { AuthProvier } from './context/AuthContext';
+import { AuthProvier } from './hooks/AuthContext';
 
 import GlobalStyle from './styles/global';
 
