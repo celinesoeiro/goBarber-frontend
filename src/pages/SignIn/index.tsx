@@ -20,7 +20,7 @@ import getValidationErrors from '../../utils/getValidationErrors';
 import logo from '../../assets/images/logo.svg';
 
 // Styles
-import { Container, Content, Background } from './styles';
+import { Container, Content, AnimationContainer, Background } from './styles';
 
 interface FormData {
   email: string;
@@ -63,22 +63,24 @@ const SignIn: React.FC = () => {
   return (
     <Container>
       <Content>
-        <img src={logo} alt="GoBarber"/>
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <h1>Faça seu logon</h1>
-          <Input name="email" icon={FiMail} placeholder="Email"/>
+        <AnimationContainer>
+          <img src={logo} alt="GoBarber"/>
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <h1>Faça seu logon</h1>
+            <Input name="email" icon={FiMail} placeholder="Email"/>
 
-          <Input name="password" icon={FiLock} type="password" placeholder="Senha"/>
+            <Input name="password" icon={FiLock} type="password" placeholder="Senha"/>
 
-          <Button type="submit">
-            Entrar
-          </Button>
-          <a href="/recover">Esqueci minha senha</a>
-        </Form>
-        <a href="/login">
-          <FiLogIn/>
-          Criar conta
-        </a>
+            <Button type="submit">
+              Entrar
+            </Button>
+            <a href="/recover">Esqueci minha senha</a>
+          </Form>
+          <a href="/login">
+            <FiLogIn/>
+            Criar conta
+          </a>
+        </AnimationContainer>
       </Content>
       <Background />
     </Container>
