@@ -19,7 +19,7 @@ interface AuthInterface {
 
 const AuthContext = createContext<AuthInterface>({} as AuthInterface);
 
-const AuthProvier: React.FC = ({ children }) => {
+const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState >(() => {
     const token = localStorage.getItem('@GoBarber:token');
     const user = localStorage.getItem('@GoBarber:user');
@@ -68,4 +68,4 @@ function useAuth(): AuthInterface {
   return context;
 }
 
-export { AuthProvier, useAuth };
+export { AuthProvider, useAuth };

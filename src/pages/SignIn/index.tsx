@@ -7,7 +7,8 @@ import { Form } from '@unform/web';
 import * as Yup from 'yup';
 
 // Hooks
-import { useAuth } from '../../hooks/AuthContext';
+import { useAuth } from '../../hooks/auth';
+import { useToast } from '../../hooks/toast';
 
 // Components
 import Button from '../../components/Button';
@@ -29,7 +30,9 @@ interface FormData {
 
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+
   const { user, signIn } = useAuth();
+  const { addToast } = useToast();
 
   const handleSubmit = useCallback(async (data: FormData) => {
     try {
@@ -47,7 +50,7 @@ const SignIn: React.FC = () => {
         abortEarly: false
       });
 
-      signIn({
+      await signIn({
         email: data.email,
         password: data.password
       });
@@ -58,9 +61,13 @@ const SignIn: React.FC = () => {
 
         formRef.current?.setErrors(errors);
       }
-
+      addToast({
+        title:'Erro na autenticação',
+        type:'error',
+        description:'Confira suas credenciais de acesso.'
+      });
     }
-  },[signIn]);
+  },[signIn, addToast]);
 
   return (
     <Container>
