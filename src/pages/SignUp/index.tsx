@@ -1,8 +1,15 @@
 import React, { useCallback, useRef } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
+
+// API
+import api from '../../services/api';
+
+// Hooks
+import { useToast } from '../../hooks/toast';
 
 // Utils
 import getValidationErrors from '../../utils/getValidationErrors';
@@ -20,10 +27,20 @@ import logo from '../../assets/images/logo.svg';
 // Styles
 import { Container, Content, AnimationContainer, Background } from './styles';
 
+interface SignUpData {
+  name: string;
+  email: string;
+  password: string;
+}
+
 const SignUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  const handleSubmit = useCallback(async (data: object) => {
+  const { addToast } = useToast();
+
+  const history = useHistory();
+
+  const handleSubmit = useCallback(async (data: SignUpData) => {
     try {
       formRef.current?.setErrors({});
 
@@ -40,14 +57,30 @@ const SignUp: React.FC = () => {
         abortEarly: false
       });
 
+      await api.post('/users', data);
+
+      history.push('/');
+
+      addToast({
+        type: 'success',
+        title: 'Cadastro realizado com sucesso',
+        description: 'Você já pode fazer seu login no GoBarber'
+      });
+
     } catch (err) {
       console.log(err);
+      if (err instanceof Yup.ValidationError){
+        const errors = getValidationErrors(err);
 
-      const errors = getValidationErrors(err);
-
-      formRef.current?.setErrors(errors);
+        formRef.current?.setErrors(errors);
+      }
+      addToast({
+        title:'Erro no cadastro',
+        type:'error',
+        description:'Ocorreu um erro ao fazer seu cadastro, tente novamente.'
+      });
     }
-  },[]);
+  },[addToast, history]);
 
   return (
     <Container>
@@ -67,10 +100,10 @@ const SignUp: React.FC = () => {
             </Button>
 
           </Form>
-          <a href="/login">
+          <Link to="/">
             <FiArrowLeft/>
             Voltar pro login
-          </a>
+          </Link>
         </AnimationContainer>
       </Content>
 

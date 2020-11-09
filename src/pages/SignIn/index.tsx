@@ -1,4 +1,5 @@
 import React, { useCallback, useRef } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 
@@ -33,6 +34,7 @@ const SignIn: React.FC = () => {
 
   const { user, signIn } = useAuth();
   const { addToast } = useToast();
+  const history = useHistory();
 
   const handleSubmit = useCallback(async (data: FormData) => {
     try {
@@ -54,6 +56,9 @@ const SignIn: React.FC = () => {
         email: data.email,
         password: data.password
       });
+
+      history.push('/dashboard');
+
     } catch (err) {
       console.log(err);
       if (err instanceof Yup.ValidationError){
@@ -67,7 +72,7 @@ const SignIn: React.FC = () => {
         description:'Confira suas credenciais de acesso.'
       });
     }
-  },[signIn, addToast]);
+  },[signIn, addToast, history]);
 
   return (
     <Container>
@@ -85,10 +90,10 @@ const SignIn: React.FC = () => {
             </Button>
             <a href="/recover">Esqueci minha senha</a>
           </Form>
-          <a href="/login">
+          <Link to="/signup">
             <FiLogIn/>
             Criar conta
-          </a>
+          </Link>
         </AnimationContainer>
       </Content>
       <Background />
